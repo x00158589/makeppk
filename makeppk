@@ -1,15 +1,24 @@
 #!/bin/bash
 
+# Checking if user name is given and setting a group
 
+if [ -z "$1" ]; then echo "Usage: sudo $0 [x12345678] [group] \n, x12345678 - user login"; exit 9; fi
 
+if [ -z "$2" ]; then 
+	echo "Use user's name as group name Y/n? [If no group 'student' will be assigned [Default:(y)es]"
+	read answer
+	if [ -z "$answer" ]; then user_grp=$new_student 
+		else echo "Group name 'student' will be used instead. Ctrl+c to cancel."; user_grp="student"
+	fi
+else
+	user_grp="$2"
+fi
 
-
-
-
-
-
+# if user exists - error - exit 9
 
 if [ !$(id -u $1 >/dev/null 2>&1) ]; then new_student=$1; echo "new user:" $new_student; else echo "user exists. error ..."; exit 9; fi
+
+# if it is a new user: create the user and his home directory 
 
 useradd -g $user_grp -m $new_student
 student_dir="/home/"$new_student"/.ssh"
@@ -17,7 +26,10 @@ mkdir $student_dir
 chown -R $new_student:$user_grp $student_dir
 
 host_name=$(hostname) 
-putty_user=$new_student"@"$host_name  # will make "x00158589@hostname" format username for puttygen
+putty_user=$new_student"@"$host_name           # will make "x00158589@hostname" format username for puttygen
+
+# generates the code - need to wait
+echo "wait, working..."
 
 puttygen -t rsa -b 2048 -C $putty_user -o $student_login.ppk
 puttygen -L $new_student.ppk >> $student_dir"/authorized_keys"
@@ -25,3 +37,10 @@ chown $new_student:$user_grp $student_dir"/authorized_keys"
 
 puttygen $new_student.ppk -O private-openssh -o $student_dir"/"$new_student".pem"
 chown $new_student:$user_grp $student_dir"/"$new_student".pem"
+
+echo $new_student".ppk file is created in the same directory as the script file "$0
+echo "Public OpenSSH file ectracted and added to "$student_dir"/authorized_keys"
+echo "as well as "$student_dir"/"$new_student".pem file placed in the same directory."
+
+# would be nice to include automatic sending the file to x00158589@compute.stu.it-tallaght.ie
+#echo "Message Body Here" | mail -s "Subject Here" x00158589@outlook.com -A x00158589.ppk
