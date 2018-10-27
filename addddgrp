@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#if [ -z "$1" ]; then echo "Usage: $0 [x12345678] [group] \n, x12345678 - user login"; exit 9; fi
+
+if [ -z "$1" ]; then 
+	echo "Use user's name as group name Y/n? [If no group 'student' will be assigned [Default:(y)es]"
+	read answer
+	if [ -z "$answer" ]; then user_grp=$new_student 
+		else echo "Group name 'student' will be used instead. Ctrl+c to cancel."; user_grp="student"
+	fi
+else
+	user_grp="$1"
+fi
+echo $user_grp

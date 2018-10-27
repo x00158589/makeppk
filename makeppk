@@ -1,0 +1,27 @@
+#!/bin/bash
+
+
+
+
+
+
+
+
+
+
+if [ !$(id -u $1 >/dev/null 2>&1) ]; then new_student=$1; echo "new user:" $new_student; else echo "user exists. error ..."; exit 9; fi
+
+useradd -g $user_grp -m $new_student
+student_dir="/home/"$new_student"/.ssh"
+mkdir $student_dir
+chown -R $new_student:$user_grp $student_dir
+
+host_name=$(hostname) 
+putty_user=$new_student"@"$host_name  # will make "x00158589@hostname" format username for puttygen
+
+puttygen -t rsa -b 2048 -C $putty_user -o $student_login.ppk
+puttygen -L $new_student.ppk >> $student_dir"/authorized_keys"
+chown $new_student:$user_grp $student_dir"/authorized_keys"
+
+puttygen $new_student.ppk -O private-openssh -o $student_dir"/"$new_student".pem"
+chown $new_student:$user_grp $student_dir"/"$new_student".pem"
