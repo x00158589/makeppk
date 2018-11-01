@@ -1,14 +1,53 @@
 #!/bin/bash
 
-#if [ -z "$1" ]; then echo "Usage: $0 [x12345678] [group] \n, x12345678 - user login"; exit 9; fi
+new_student=$1
+user_grp=$2
 
-if [ -z "$1" ]; then 
-	echo "Use user's name as group name Y/n? [If no group 'student' will be assigned [Default:(y)es]"
-	read answer
-	if [ -z "$answer" ]; then user_grp=$new_student 
-		else echo "Group name 'student' will be used instead. Ctrl+c to cancel."; user_grp="student"
-	fi
-else
-	user_grp="$1"
+if [ -z $new_student ]; then printf "Usage: $0 [x12345678] [group] \nx12345678 - user login \ngroup - user group\nExit...\n"; exit 9; fi
+if [ -z $user_grp ]
+    then
+	answer="initializing variable"    # to accept [Enter] as an answer
+
+	while ! [[ $answer =~ ^(''|y|yes|Y|Yes|n|N|no|No)$ ]] 
+	do
+	  printf "user name = group name? [Y/n] "
+	  read -r answer
+	done 
+
+	if [[ $answer = [yY] || $answer == [yY][eE][sS] || $answer = '' ]]; then user_grp=$new_student
+	else answer="initializing again" # not to have the old aswer for the new question 
+	     while ! [[ $answer =~ ^(''|y|yes|Y|Yes|n|N|no|No)$ ]] 
+	     do
+  		printf "group = 'student'? [Y/n] "
+  		read -r answer
+	     done
+	     if [[ $answer = [yY] || $answer == [yY][eE][sS] || $answer = '' ]]; then user_grp="student"
+	     else read -p "Enter the group: " user_grp
+		if [ -z $user_grp ]
+		then printf "Error:\nUsage: $0 [x12345678] [group] \nx12345678 - user login \ngroup - user group\nExit...\n"; exit 9; fi
+	     fi
+        fi
 fi
-echo $user_grp
+
+
+#$answer == [yY] || $answer == [yY][eE][sS] ||
+# $answer == [yY]
+#read -p "Continue? (Y/N): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
+#echo "Confirm: " $confirm
+# [ -z "$answer" ]
+#while [[ $answer != 'y' ]] || [[ $answer == '' ]] # While string is different or empty...
+#do
+#    read -p "Enter string: " string # Ask the user to enter a string
+#    echo "Enter a valid string" # Ask the user to enter a valid string
+#done 
+#    command 1 
+#
+#echo "Use user's name as group name Y/n? [If no group 'student' will be assigned [Default:(y)es]"
+#read answer
+#if [ -z "$answer" ]
+#	then user_grp=$new_student; echo "You keyed-in:" $answer " and Group:" $user_grp
+#	else echo "Group name 'student' will be used instead"; user_grp="student"
+#fi
+#echo "You keyed-in:" $answer
+echo "User group:" $user_grp
+
