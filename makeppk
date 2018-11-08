@@ -36,8 +36,10 @@ fi
 
 student_dir="/home/"$new_student"/.ssh"
 
-# if new user exists the group exists too
-# if user is new needs to check group existance 
+#
+# if new user exists, the group exists too
+# if user is new, then it needs to check the group's existance 
+#
 
 if [ !$(id -u $new_student >/dev/null 2>&1) ]; then 
 	echo "new user:" $new_student 
@@ -51,9 +53,12 @@ else echo "user " $new_student " exists"
 	user_grp=$(id -gn $new_student)
 fi
 
-student_dir="/home/"$new_student"/.ssh"
+student_dir="/home/"$new_student"/.ssh"        # setting up a home directory for a user
 
-# checking if user has a directory /.ssh in his home dir.
+#
+# checking if user has a directory /.ssh in his home dir
+# in no, create one and set the ownership of the directory
+#
 if [ ! -d $student_dir ]; then
 	mkdir $student_dir
 	chown -R $new_student:$user_grp $student_dir
@@ -62,13 +67,16 @@ fi
 host_name=$(hostname) 
 putty_user=$new_student"@"$host_name           # will make "x00158589@hostname" format username for puttygen
 
-# generates the code - need to wait
-echo "wait, working..."
+########## GENERATING PPK FILE ###################################################
+echo "wait, working..."                        # generates the code - need to wait
 
 puttygen -t rsa -b 2048 -C $putty_user -o $student_login.ppk
-puttygen -L $new_student.ppk >> $student_dir"/authorized_keys"
+
+# extract a public key and copy to student_dir/.ssh/authorized_keys
+puttygen -L $new_student.ppk >> $student_dir"/authorized_keys"  
 chown $new_student:$user_grp $student_dir"/authorized_keys"
 
+# extract private ssh key (file .pem) and put in the student's .ssh directory 
 puttygen $new_student.ppk -O private-openssh -o $student_dir"/"$new_student".pem"
 chown $new_student:$user_grp $student_dir"/"$new_student".pem"
 
@@ -76,5 +84,7 @@ echo $new_student".ppk file is created in the same directory as the script file 
 echo "Public OpenSSH file ectracted and added to "$student_dir"/authorized_keys"
 echo "as well as "$student_dir"/"$new_student".pem file placed in the same directory."
 
-# would be nice to include automatic sending the file to x00158589@compute.stu.it-tallaght.ie
-#echo "Message Body Here" | mail -s "Subject Here" x00158589@outlook.com -A x00158589.ppk
+# to do:
+# would be nice to include automatic sending the file to xNNNNNNNN@compute.stu.it-tallaght.ie
+# echo "Message Body Here" | mail -s "Subject Here" x00158589@outlook.com -A x00158589.ppk
+#
