@@ -1,6 +1,12 @@
 #!/bin/bash
+# Use free on your own risk! 
+# The script makes .ppk file for putty to login to remote linux computer
+# Required: OpenSSH and putty-tools have to be installed. 
+# To install:  
+# $ sudo apt-get install openssh-server
+# $ sudo apt-get install putty-tools
 #
-
+#
 # Checking if user name is given and setting a group
 inew_student=$1
 user_grp=$2
