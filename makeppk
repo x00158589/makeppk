@@ -59,7 +59,13 @@ else echo "user " $new_student " exists"
 	user_grp=$(id -gn $new_student)
 fi
 
-student_dir="/home/"$new_student"/.ssh"        # setting up a home directory for a user
+student_dir="/home/"$new_student
+if [ ! -d $student_dir ]; then
+	mkdir $student_dir
+	chown -R $new_student:$user_grp $student_dir
+fi
+
+student_dir=$student_dir"/.ssh"        # setting up a home directory for a user
 
 #
 # checking if user has a directory /.ssh in his home dir
