@@ -8,7 +8,7 @@
 #
 #
 # Checking if user name is given and setting a group
-inew_student=$1
+new_student=$1
 user_grp=$2
 
 if [ -z $new_student ]; then printf "Usage: $0 [x12345678] [group] \nx12345678 - user login \ngroup - user group\nExit...\n"; exit 9; fi
@@ -38,7 +38,7 @@ if [ -z $user_grp ]
 fi
 
 # we have user name and group declared.
-# if user exists does he have .ssh directory? if no lets create 
+
 
 student_dir="/home/"$new_student"/.ssh"
 
@@ -59,18 +59,18 @@ else echo "user " $new_student " exists"
 	user_grp=$(id -gn $new_student)
 fi
 
+# if user exists does he have home directory? if no lets create
+# setting up a home directory for a user
 student_dir="/home/"$new_student
 if [ ! -d $student_dir ]; then
 	mkdir $student_dir
 	chown -R $new_student:$user_grp $student_dir
 fi
 
-student_dir=$student_dir"/.ssh"        # setting up a home directory for a user
-
-#
 # checking if user has a directory /.ssh in his home dir
 # in no, create one and set the ownership of the directory
 #
+student_dir=$student_dir"/.ssh"
 if [ ! -d $student_dir ]; then
 	mkdir $student_dir
 	chown -R $new_student:$user_grp $student_dir
