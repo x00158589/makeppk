@@ -1,0 +1,5 @@
+#!/bin/bash
+myvar=$(puttygen)
+while $(puttygen) -ne 0 ; do
+	sudo apt install putty-tools
+done

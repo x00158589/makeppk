@@ -83,6 +83,9 @@ echo "wait, working..."                        # generates the code - need to wa
 
 puttygen -t rsa -b 2048 -C $putty_user -o $new_student.ppk
 
+
+
+
 if [[ ! -e $new_student.ppk ]]; then echo "Error: file" $new_student".ppk has not been created. Exit..."; exit 9
 else echo $new_student".ppk file created"
 echo "student_dir="$student_dir
